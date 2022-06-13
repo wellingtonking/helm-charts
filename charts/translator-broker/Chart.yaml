@@ -1,0 +1,6 @@
+apiVersion: v2
+name: translator-broker
+description: A RESTful, Javascript friendly, high performance caching translation broker service.
+type: application
+version: 0.1.0
+appVersion: "v0.0.4-alpha.2"

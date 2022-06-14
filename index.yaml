@@ -2,8 +2,19 @@ apiVersion: v1
 entries:
   translator-broker:
   - apiVersion: v2
+    appVersion: v0.0.5
+    created: "2022-06-14T02:44:24.740669689Z"
+    description: A RESTful, Javascript friendly, high performance caching translation
+      broker service.
+    digest: f47ece79b48ed56e614154f290df6d268e293b54ed7edb475c1354eb93604b34
+    name: translator-broker
+    type: application
+    urls:
+    - https://wellingtonking.github.io/helm-charts/translator-broker-0.5.0.tgz
+    version: 0.5.0
+  - apiVersion: v2
     appVersion: v0.0.5-alpha.1
-    created: "2022-06-14T02:28:04.433290059Z"
+    created: "2022-06-14T02:44:24.740161585Z"
     description: A RESTful, Javascript friendly, high performance caching translation
       broker service.
     digest: 1ed8145a8634a899405206e5ee7049e8197a9d1d31b87a020dd3e59ac0075352
@@ -14,7 +25,7 @@ entries:
     version: 0.4.0
   - apiVersion: v2
     appVersion: v0.0.5-alpha.1
-    created: "2022-06-14T02:28:04.432851939Z"
+    created: "2022-06-14T02:44:24.739586313Z"
     description: A RESTful, Javascript friendly, high performance caching translation
       broker service.
     digest: d200e1eca85cee58d150c647f10a764435c20a909b7ede29052d5859b9d5daf2
@@ -25,7 +36,7 @@ entries:
     version: 0.3.0
   - apiVersion: v2
     appVersion: v0.0.4-alpha.2
-    created: "2022-06-14T02:28:04.43227434Z"
+    created: "2022-06-14T02:44:24.739038438Z"
     description: A RESTful, Javascript friendly, high performance caching translation
       broker service.
     digest: b9dc6c6df74eefab309050cf10ee381f9b31344a42c11d52edcdd33d7ef37ca0
@@ -36,7 +47,7 @@ entries:
     version: 0.2.0
   - apiVersion: v2
     appVersion: v0.0.4-alpha.2
-    created: "2022-06-14T02:28:04.431745289Z"
+    created: "2022-06-14T02:44:24.738408962Z"
     description: A RESTful, Javascript friendly, high performance caching translation
       broker service.
     digest: 709f71302f0405be22d8143bb1e699a95f71ec275360f7f2cec9399ac9cae7a2
@@ -45,4 +56,4 @@ entries:
     urls:
     - https://wellingtonking.github.io/helm-charts/translator-broker-0.1.0.tgz
     version: 0.1.0
-generated: "2022-06-14T02:28:04.431035784Z"
+generated: "2022-06-14T02:44:24.737585757Z"

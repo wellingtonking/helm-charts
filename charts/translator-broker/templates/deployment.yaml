@@ -34,15 +34,37 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
 
-          {{- if .Values.server }}
-          {{- if .Values.server.env }}
           env:
-            {{- range .Values.server.env }}
-            - name: {{ .name | quote }}
-              value: {{ .value | quote }}
-            {{- end }}
+          - name: LOG_LEVEL
+            value: WARNING
 
+          {{- range .Values.server.env }}
+          - name: {{ .name | quote }}
+            value: {{ .value | quote }}
           {{- end }}
+
+          {{- if and (ne .Values.deepl.api_key.secrets_name "") (ne .Values.deepl.api_key.secrets_key "") }}
+          - name: HT_DEEPL_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.deepl.api_key.secrets_name }}
+                key: {{ .Values.deepl.api_key.secrets_key }}
+          {{- end }}
+
+          {{- if and (ne .Values.deepl.api_url.secrets_name "") (ne .Values.deepl.api_url.secrets_key "") }}
+          - name: HT_DEEPL_URL
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.deepl.api_url.secrets_name }}
+                key: {{ .Values.deepl.api_url.secrets_key }}
+          {{- end }}
+
+          {{- if and (ne .Values.google.app_credentials.secrets_name "") (ne .Values.google.app_credentials.secrets_key "") }}
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.deepl.app_credentials.secrets_name }}
+                key: {{ .Values.deepl.app_credentials.secrets_key }}
           {{- end }}
 
           ports:

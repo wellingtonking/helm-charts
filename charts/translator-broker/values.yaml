@@ -15,13 +15,24 @@ nameOverride: ""
 fullnameOverride: ""
 
 server:
-  env:
-  - name: HT_DEEPL_KEY
-    value: ""
-  - name: HT_DEEPL_URL
-    value: "https://api.deepl.com/v2"
-  - name: GOOGLE_APPLICATION_CREDENTIALS
-    value: ""
+  env: []
+  # - name: ENV_VAR_A
+  #   value: "value a"
+  # - name: ENV_VAR_B
+  #   value: "value b"
+
+deepl:
+  api_key:
+    secrets_name: ""
+    secrets_key: ""
+  api_url:
+    secrets_name: ""
+    secrets_key: ""
+
+google:
+  app_credentials:
+    secrets_name: ""
+    secrets_key: ""
 
 serviceAccount:
   # Specifies whether a service account should be created

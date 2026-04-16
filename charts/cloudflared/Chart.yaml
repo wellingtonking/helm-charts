@@ -1,0 +1,11 @@
+---
+apiVersion: v2
+name: cloudflared-remote
+description: Minimal Helm chart for a remotely managed Cloudflare Tunnel
+maintainers:
+  - name: cdemers
+    email: cdemers@wellingtonking.com
+    url: https://wellingtonking.com
+type: application
+version: 0.1.0
+appVersion: "2026.3.0"

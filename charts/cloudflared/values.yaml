@@ -1,0 +1,71 @@
+---
+replicaCount: 1
+
+image:
+  repository: cloudflare/cloudflared
+  tag: "2026.3.0"  # March 9 2026
+  pullPolicy: IfNotPresent
+
+cloudflare:
+  # Preferred: reference an existing Secret.
+  existingSecret: ""
+  existingSecretKey: "token"
+
+  # Fallback only for quick tests. Do not commit real tokens.
+  tunnelToken: ""
+
+tunnel:
+  metricsAddress: "0.0.0.0:2000"
+  noAutoUpdate: true
+
+  # Extra args appended after `tunnel run`
+  extraArgs: []
+  # Example:
+  # extraArgs:
+  #   - --loglevel
+  #   - info
+
+serviceAccount:
+  create: true
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  capabilities:
+    drop:
+      - ALL
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 250m
+    memory: 256Mi
+
+nodeSelector: {}
+#  kubernetes.io/os: linux
+#  kubernetes.io/hostname: my-favourite-node
+
+tolerations: []
+affinity: {}
+
+extraEnv: []
+# Example:
+# extraEnv:
+#   - name: TZ
+#     value: America/Montreal
+
+service:
+  enabled: false
+  type: ClusterIP
+  port: 2000
+
+nameOverride: ""
+fullnameOverride: ""

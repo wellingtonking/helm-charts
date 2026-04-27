@@ -1,0 +1,97 @@
+{{- range $app := .Values.argocdApplications -}}
+{{- if not $app.disabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  {{- /* ── Annotations: default merged with per-app (app wins) ──────── */}}
+  {{- $defAnnotations := dig "annotations" dict $.Values.default }}
+  {{- $appAnnotations := $app.annotations | default dict }}
+  {{- $annotations := merge $appAnnotations $defAnnotations }}
+  {{- if $annotations }}
+  annotations:
+    {{- $annotations | toYaml | nindent 4 }}
+  {{- end }}
+  {{- /* ── Labels ────────────────────────────────────────────────────── */}}
+  labels:
+    app:  {{ dig "labels" "app"  $app.name                       $app }}
+    env:  {{ dig "labels" "env"  $.Values.default.labels.env     $app }}
+    team: {{ dig "labels" "team" $.Values.default.labels.team    $app }}
+    tier: {{ dig "labels" "tier" $.Values.default.labels.tier    $app }}
+  {{- $extraLabels := dig "labels" "extra" dict $app }}
+  {{- if $extraLabels }}
+    {{- $extraLabels | toYaml | nindent 4 }}
+  {{- end }}
+  {{- /* ── Name ─────────────────────────────────────────────────────── */}}
+  {{- if $app.nameOverride }}
+  name: {{ $app.nameOverride }}
+  {{- else }}
+  name: {{ $app.name }}-{{ $.Values.default.env }}
+  {{- end }}
+  namespace: {{ default "argocd" $.Values.default.namespace }}
+spec:
+  {{- /* ── Destination ──────────────────────────────────────────────── */}}
+  destination:
+    {{- $destName   := default (dig "spec" "destination" "name"   "" $.Values.default) $app.destinationName }}
+    {{- $destServer := default (dig "spec" "destination" "server" "" $.Values.default) $app.destinationServer }}
+    {{- if $destName }}
+    name: {{ $destName }}
+    {{- else if $destServer }}
+    server: {{ $destServer }}
+    {{- end }}
+    {{- if $app.namespace }}
+    namespace: {{ $app.namespace }}
+    {{- end }}
+  {{- /* ── ignoreDifferences ───────────────────────────────────────── */}}
+  {{- if $app.ignoreDifferences }}
+  ignoreDifferences:
+    {{- $app.ignoreDifferences | toYaml | nindent 4 }}
+  {{- end }}
+  {{- /* ── info ─────────────────────────────────────────────────────── */}}
+  {{- if $app.info }}
+  info:
+    {{- $app.info | toYaml | nindent 4 }}
+  {{- end }}
+  project: {{ default $.Values.default.spec.project $app.project }}
+  {{- /* ── revisionHistoryLimit ────────────────────────────────────── */}}
+  {{- $rhl := $app.revisionHistoryLimit | default (dig "spec" "revisionHistoryLimit" "" $.Values.default) }}
+  {{- if $rhl }}
+  revisionHistoryLimit: {{ $rhl }}
+  {{- end }}
+  {{- /* ── source / sources ─────────────────────────────────────────── */}}
+  {{- if $app.sources }}
+  {{- /* Multi-source (ArgoCD ≥ 2.6) */}}
+  sources:
+  {{- range $src := $app.sources }}
+  {{- $rendered := include "applications.source" (dict "source" $src "default" $.Values.default) | trim }}
+  - {{ $rendered | nindent 4 | trimPrefix "\n    " }}
+  {{- end }}
+  {{- else }}
+  {{- /* Single source */}}
+  source:
+    {{- $singleSource := dict
+        "chart"         $app.chart
+        "helm"          $app.helm
+        "kustomize"     $app.kustomize
+        "directory"     $app.directory
+        "plugin"        $app.plugin
+        "path"          ($app.path          | default "")
+        "repoURL"       ($app.repoURL       | default "")
+        "ref"           ($app.ref           | default "")
+        "targetRevision" ($app.targetRevision | default "")
+    }}
+    {{- include "applications.source" (dict "source" $singleSource "default" $.Values.default) | trim | nindent 4 }}
+  {{- end }}
+  {{- /* ── syncPolicy: default deep-merged with per-app (app wins) ─── */}}
+  {{- $defSyncPolicy := dig "spec" "syncPolicy" dict $.Values.default }}
+  {{- $appSyncPolicy := $app.syncPolicy | default dict }}
+  {{- $syncPolicy := merge $appSyncPolicy $defSyncPolicy }}
+  {{- if $syncPolicy }}
+  syncPolicy:
+    {{- $syncPolicy | toYaml | nindent 4 }}
+  {{- end }}
+---
+{{- end }}
+{{- end }}
+

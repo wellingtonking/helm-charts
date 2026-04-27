@@ -1,0 +1,77 @@
+# ---------------------------------------------------------------------------
+# applications_v2 — default values
+#
+# This file is intentionally conservative. Applying it without overrides
+# renders nothing (argocdApplications is empty). Customise by supplying
+# your own -f values file or by overriding individual keys with --set.
+#
+# See values.example.yaml for a fully-annotated reference covering every
+# supported field (Helm, Kustomize, Directory, Plugin, multi-source, etc.).
+# ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
+# Global defaults — every per-app field falls back to these when not set.
+# ---------------------------------------------------------------------------
+default:
+  # Suffix appended to every app name: <app.name>-<env>
+  # Override per-app with .nameOverride to skip the suffix entirely.
+  env: production
+
+  # Namespace in which ArgoCD Application objects are created.
+  namespace: argocd
+
+  # Labels stamped on every Application object.
+  # Per-app .labels.{env|team|tier|app} override individual keys.
+  # Per-app .labels.extra adds arbitrary extra labels.
+  labels:
+    env: production
+    team: platform
+    tier: infrastructure
+
+  # Annotations merged into every Application object.
+  # Per-app .annotations are merged on top (app-level wins on conflict).
+  annotations: {}
+
+  # Default Helm valueFiles used when a source has a .helm block
+  # but does not define its own .helm.valueFiles list.
+  valuesFiles:
+    - values.yaml
+
+  spec:
+    project: default
+
+    destination:
+      # Use EITHER name (ArgoCD-registered cluster name) OR server URL.
+      # Leaving 'name: in-cluster' targets the local cluster safely.
+      name: in-cluster
+      # server: https://kubernetes.default.svc
+
+    source:
+      targetRevision: HEAD
+
+    # Uncomment to cap revision history for all apps.
+    # revisionHistoryLimit: 10
+
+    # Default syncPolicy applied to every app.
+    # Per-app .syncPolicy is deep-merged on top (app wins on conflict).
+    # These conservative defaults require a manual sync trigger and will
+    # NOT prune resources automatically.
+    syncPolicy:
+      automated:
+        prune: false      # !! never delete live resources automatically
+        selfHeal: false   # !! never auto-revert manual changes
+        allowEmpty: false
+      syncOptions:
+        - CreateNamespace=true
+      retry:
+        limit: 3
+        backoff:
+          duration: 5s
+          factor: 2
+          maxDuration: 1m
+
+# ---------------------------------------------------------------------------
+# Application list — empty by default so that a bare install is a no-op.
+# Add your ArgoCD Application definitions here, or supply them via -f.
+# ---------------------------------------------------------------------------
+argocdApplications: []

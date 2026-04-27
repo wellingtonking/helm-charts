@@ -1,0 +1,10 @@
+apiVersion: v2
+name: applications
+description: >
+  ArgoCD Application CRD generator v2.
+  Loops over a list of application definitions and renders ArgoCD Application
+  objects with full support for multi-source, Helm/Kustomize/Directory/Plugin
+  source types, ignoreDifferences, rich syncPolicy, annotations, and more.
+type: application
+version: 2.0.0
+

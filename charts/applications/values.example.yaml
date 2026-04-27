@@ -1,0 +1,247 @@
+# ---------------------------------------------------------------------------
+# applications_v2 — example values reference
+#
+# This file demonstrates every supported field. It is NOT meant to be used
+# as-is. Copy the blocks you need into your own values file and adjust them.
+#
+# Usage:
+#   helm template my-release . -f values.example.yaml
+#   helm install  my-release . -f values.yaml -f my-overrides.yaml
+# ---------------------------------------------------------------------------
+
+# You can override any default from values.yaml here.
+# For example, to deploy to a staging environment:
+#
+# default:
+#   env: staging
+#   spec:
+#     destination:
+#       name: staging-cluster
+#     syncPolicy:
+#       automated:
+#         prune: true
+#         selfHeal: true
+
+argocdApplications:
+
+  # -------------------------------------------------------------------------
+  # Example 1 — Single-source Helm app (most common case)
+  # -------------------------------------------------------------------------
+  - name: my-helm-app
+    # disabled: true            # set to true to temporarily skip this app
+
+    namespace: my-helm-app      # destination namespace for the workload
+    project: my-project         # overrides default.spec.project
+
+    repoURL: https://github.com/myorg/helm-charts
+    path: charts/my-app
+    targetRevision: HEAD        # overrides default.spec.source.targetRevision
+
+    helm:
+      releaseName: my-helm-app
+      valueFiles:               # overrides default.valuesFiles
+        - values.yaml
+        - values-production.yaml
+      # Inline values — lowest precedence, merged last by Helm.
+      # values: |
+      #   replicaCount: 2
+      # Structured inline values — equivalent to values: but as a YAML map.
+      # valuesObject:
+      #   replicaCount: 2
+      # Individual parameter overrides.
+      # parameters:
+      #   - name: image.tag
+      #     value: "1.2.3"
+      # version: v3                       # force a specific Helm version
+      # passCredentials: false            # pass repo credentials to subcharts
+      # ignoreMissingValueFiles: false    # don't fail if a valueFile is absent
+      # skipCrds: false                   # skip CRD installation
+
+    # Label overrides — each key is independent; unset keys use the default.
+    labels:
+      app: my-helm-app          # overrides the auto-derived label (app.name)
+      team: backend             # overrides default.labels.team
+      tier: application         # overrides default.labels.tier
+      extra:                    # merged as-is (arbitrary extra labels)
+        component: api
+        version: v2
+
+    # Annotations merged on top of default.annotations (app wins on conflict).
+    annotations:
+      notifications.argoproj.io/subscribe.on-sync-failed.slack: deployments
+      link.argocd.argoproj.io/external-link: https://grafana.example.com
+
+    # Full syncPolicy — deep-merged with default.spec.syncPolicy (app wins).
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+        allowEmpty: false
+      syncOptions:
+        - CreateNamespace=true
+        - ServerSideApply=true
+        - PrunePropagationPolicy=foreground
+      retry:
+        limit: 5
+        backoff:
+          duration: 10s
+          factor: 2
+          maxDuration: 3m
+
+    # Human-readable links shown in the ArgoCD UI.
+    info:
+      - name: Documentation
+        value: https://wiki.example.com/my-helm-app
+
+  # -------------------------------------------------------------------------
+  # Example 2 — Kustomize app with ignoreDifferences
+  # -------------------------------------------------------------------------
+  - name: my-kustomize-app
+    disabled: true
+
+    namespace: my-kustomize-app
+    repoURL: https://github.com/myorg/k8s-manifests
+    path: overlays/production
+
+    kustomize:
+      version: v5.0.0
+      namePrefix: prod-
+      # nameSuffix: -prod
+      images:
+        - gcr.io/myorg/myimage:v1.2.3
+      commonLabels:
+        managed-by: argocd
+      commonAnnotations:
+        deploy-env: production
+
+    # Field-level drift to tolerate (ArgoCD will not mark these as OutOfSync).
+    ignoreDifferences:
+      - group: apps
+        kind: Deployment
+        jsonPointers:
+          - /spec/replicas         # managed by an HPA
+      - group: autoscaling
+        kind: HorizontalPodAutoscaler
+        jqPathExpressions:
+          - '.spec.metrics[] | select(.type == "ContainerResource")'
+      - group: ""
+        kind: Secret
+        managedFieldsManagers:
+          - external-secrets       # ignore fields written by external-secrets
+
+    revisionHistoryLimit: 5        # keep only the 5 most recent syncs
+
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+      syncOptions:
+        - CreateNamespace=true
+        - RespectIgnoreDifferences=true
+      # Labels/annotations applied to the auto-created namespace.
+      managedNamespaceMetadata:
+        labels:
+          team: platform
+        annotations:
+          managed-by: argocd
+
+  # -------------------------------------------------------------------------
+  # Example 3 — Multi-source app (ArgoCD ≥ 2.6)
+  #   Separates the Helm chart repo from the values repo.
+  # -------------------------------------------------------------------------
+  - name: my-multi-source-app
+    disabled: true
+
+    namespace: my-multi-source-app
+
+    # Use 'sources' (plural) instead of the top-level repoURL/path fields.
+    sources:
+      # Source 1: Helm chart — references $values alias from source 2.
+      - repoURL: https://github.com/myorg/helm-charts
+        path: charts/my-app
+        targetRevision: HEAD
+        helm:
+          valueFiles:
+            - $values/environments/production/my-app/values.yaml
+      # Source 2: Values repo — declared as a ref so source 1 can alias it.
+      - repoURL: https://github.com/myorg/values-repo
+        targetRevision: main
+        ref: values             # becomes the $values alias in source 1
+
+  # -------------------------------------------------------------------------
+  # Example 4 — Directory app (raw YAML / plain manifests)
+  # -------------------------------------------------------------------------
+  - name: my-directory-app
+    disabled: true
+
+    namespace: my-directory-app
+    repoURL: https://github.com/myorg/k8s-manifests
+    path: apps/my-app
+
+    directory:
+      recurse: true
+      include: "*.yaml"
+      # exclude: "secret*.yaml"
+      # jsonnet:
+      #   extVars:
+      #     - name: env
+      #       value: production
+      #   tlas:
+      #     - name: cluster
+      #       value: in-cluster
+
+  # -------------------------------------------------------------------------
+  # Example 5 — Helm chart from an OCI / HTTP chart registry (no path)
+  # -------------------------------------------------------------------------
+  - name: my-oci-chart-app
+    disabled: true
+
+    namespace: my-oci-chart-app
+    repoURL: https://charts.bitnami.com/bitnami
+    chart: nginx                # use 'chart' instead of 'path' for registries
+    targetRevision: 15.0.0
+
+    helm:
+      releaseName: my-nginx
+      parameters:
+        - name: replicaCount
+          value: "2"
+        - name: service.type
+          value: ClusterIP
+
+  # -------------------------------------------------------------------------
+  # Example 6 — Config Management Plugin (CMP)
+  # -------------------------------------------------------------------------
+  - name: my-plugin-app
+    disabled: true
+
+    namespace: my-plugin-app
+    repoURL: https://github.com/myorg/k8s-manifests
+    path: apps/my-plugin-app
+
+    plugin:
+      name: my-cmp-plugin
+      env:
+        - name: ENVIRONMENT
+          value: production
+        - name: CLUSTER
+          value: in-cluster
+
+  # -------------------------------------------------------------------------
+  # Example 7 — App with a static name (no env suffix), custom destination
+  # -------------------------------------------------------------------------
+  - name: my-infra-app
+    disabled: true
+    nameOverride: my-infra-app  # renders exactly as given, no -<env> suffix
+
+    namespace: kube-system
+    destinationName: remote-cluster     # overrides default.spec.destination.name
+    # destinationServer: https://1.2.3.4  # alternative: use server URL instead
+
+    repoURL: https://github.com/myorg/infra-charts
+    path: charts/cert-manager
+    targetRevision: v1.14.0
+    helm:
+      releaseName: cert-manager
+      skipCrds: false
+

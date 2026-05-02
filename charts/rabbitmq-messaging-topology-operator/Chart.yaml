@@ -1,0 +1,24 @@
+---
+apiVersion: v2
+name: rabbitmq-messaging-topology-operator
+description: >
+  A Helm chart for the RabbitMQ Messaging Topology Operator,
+  which manages RabbitMQ messaging topology objects (queues,
+  exchanges, bindings, users, vhosts, etc.) as Kubernetes
+  custom resources.
+type: application
+version: 0.0.1
+appVersion: "1.19.1"
+keywords:
+  - rabbitmq
+  - messaging
+  - operator
+  - topology
+home: https://github.com/rabbitmq/messaging-topology-operator
+sources:
+  - https://github.com/rabbitmq/messaging-topology-operator
+maintainers:
+  - name: rabbitmq
+    url: https://github.com/rabbitmq
+annotations:
+  artifacthub.io/category: streaming-messaging

@@ -1,0 +1,2 @@
+*.nogit*
+/charts/rabbitmq-messaging-topology-operator/manifests.nogit

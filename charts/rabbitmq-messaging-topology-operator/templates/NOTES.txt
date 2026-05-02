@@ -1,0 +1,29 @@
+RabbitMQ Messaging Topology Operator {{ .Chart.AppVersion }} has been deployed.
+
+Namespace : {{ include "rabbitmq-messaging-topology-operator.namespace" . }}
+Deployment: messaging-topology-operator
+
+The operator watches all namespaces for RabbitMQ topology resources:
+  bindings, exchanges, federations, operatorpolicies, permissions,
+  policies, queues, schemareplications, shovels, superstreams,
+  topicpermissions, users and vhosts.
+
+Prerequisites:
+  • The RabbitMQ Cluster Operator must be installed first.
+{{- if .Values.certManager.enabled }}
+  • cert-manager must be installed (certManager.enabled=true).
+{{- else }}
+  • Provide TLS for the webhook manually and set
+    webhook.secretName to the name of the TLS Secret.
+{{- end }}
+
+Check the operator logs with:
+  kubectl logs -n {{ include "rabbitmq-messaging-topology-operator.namespace" . }} \
+    deployment/messaging-topology-operator
+
+{{- if .Values.metrics.enabled }}
+
+Metrics are exposed on port {{ .Values.metrics.port }} (HTTPS) via the
+messaging-topology-controller-metrics-service Service.
+{{- end }}
+

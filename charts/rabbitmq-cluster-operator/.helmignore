@@ -1,0 +1,2 @@
+*.nogit*
+/charts/rabbitmq-cluster-operator/manifests.nogit

@@ -1,0 +1,52 @@
+{{- if .Values.certManager.enabled }}
+{{- $ns := include "rabbitmq-messaging-topology-operator.namespace" . }}
+{{- $issuer := include "rabbitmq-messaging-topology-operator.issuerName" . }}
+{{- if not .Values.certManager.issuerName }}
+---
+# Self-signed Issuer — omit if you supply certManager.issuerName.
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: messaging-topology-selfsigned-issuer
+  namespace: {{ $ns }}
+  labels:
+    {{- include "rabbitmq-messaging-topology-operator.labels" . | nindent 4 }}
+spec:
+  selfSigned: {}
+{{- end }}
+---
+# Certificate for the metrics endpoint.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: messaging-topology-metrics-certs
+  namespace: {{ $ns }}
+  labels:
+    {{- include "rabbitmq-messaging-topology-operator.labels" . | nindent 4 }}
+spec:
+  dnsNames:
+    - messaging-topology-controller-metrics-service.{{ $ns }}.svc
+    - messaging-topology-controller-metrics-service.{{ $ns }}.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: {{ $issuer }}
+  secretName: metrics-server-cert
+---
+# Certificate for the admission webhook endpoint.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: messaging-topology-serving-cert
+  namespace: {{ $ns }}
+  labels:
+    {{- include "rabbitmq-messaging-topology-operator.labels" . | nindent 4 }}
+spec:
+  dnsNames:
+    - messaging-topology-webhook-service.{{ $ns }}.svc
+    - messaging-topology-webhook-service.{{ $ns }}.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: {{ $issuer }}
+  secretName: {{ .Values.webhook.secretName }}
+{{- end }}
+

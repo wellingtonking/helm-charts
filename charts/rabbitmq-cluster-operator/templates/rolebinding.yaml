@@ -1,0 +1,18 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: rabbitmq-cluster-leader-election-rolebinding
+  namespace: {{ include "rabbitmq-cluster-operator.namespace" . }}
+  labels:
+    {{- include "rabbitmq-cluster-operator.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: rabbitmq-cluster-leader-election-role
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "rabbitmq-cluster-operator.serviceAccountName" . }}
+    namespace: {{ include "rabbitmq-cluster-operator.namespace" . }}
+{{- end }}
+

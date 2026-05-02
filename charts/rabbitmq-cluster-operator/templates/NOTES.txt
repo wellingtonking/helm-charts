@@ -1,0 +1,27 @@
+RabbitMQ Cluster Operator {{ .Chart.AppVersion }} has been deployed.
+
+Namespace : {{ include "rabbitmq-cluster-operator.namespace" . }}
+Deployment: rabbitmq-cluster-operator
+
+The operator is now watching all namespaces for RabbitmqCluster resources.
+To create a RabbitMQ cluster, apply a RabbitmqCluster custom resource, e.g.:
+
+  apiVersion: rabbitmq.com/v1beta1
+  kind: RabbitmqCluster
+  metadata:
+    name: my-rabbitmq
+    namespace: <your-namespace>
+  spec:
+    replicas: 3
+
+Check the operator logs with:
+  kubectl logs -n {{ include "rabbitmq-cluster-operator.namespace" . }} \
+    deployment/rabbitmq-cluster-operator
+
+{{- if .Values.metrics.enabled }}
+
+Metrics are exposed on port {{ .Values.metrics.port }} via the
+rabbitmq-cluster-operator-metrics-service Service in the
+{{ include "rabbitmq-cluster-operator.namespace" . }} namespace.
+{{- end }}
+

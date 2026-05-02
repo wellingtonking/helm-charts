@@ -1,0 +1,18 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: messaging-topology-leader-election-rolebinding
+  namespace: {{ include "rabbitmq-messaging-topology-operator.namespace" . }}
+  labels:
+    {{- include "rabbitmq-messaging-topology-operator.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: messaging-topology-leader-election-role
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "rabbitmq-messaging-topology-operator.serviceAccountName" . }}
+    namespace: {{ include "rabbitmq-messaging-topology-operator.namespace" . }}
+{{- end }}
+

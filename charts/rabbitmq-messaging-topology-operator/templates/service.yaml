@@ -1,0 +1,41 @@
+{{- if .Values.metrics.enabled }}
+---
+# Metrics Service (HTTPS, secured by cert-manager certificate).
+apiVersion: v1
+kind: Service
+metadata:
+  name: messaging-topology-controller-metrics-service
+  namespace: {{ include "rabbitmq-messaging-topology-operator.namespace" . }}
+  labels:
+    {{- include "rabbitmq-messaging-topology-operator.labels" . | nindent 4 }}
+    control-plane: controller-manager
+  {{- with .Values.metrics.serviceAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  ports:
+    - name: https
+      port: {{ .Values.metrics.port }}
+      protocol: TCP
+      targetPort: {{ .Values.metrics.port }}
+  selector:
+    {{- include "rabbitmq-messaging-topology-operator.serviceSelectorLabels" . | nindent 4 }}
+{{- end }}
+---
+# Webhook Service — always required when the webhook is enabled.
+apiVersion: v1
+kind: Service
+metadata:
+  name: messaging-topology-webhook-service
+  namespace: {{ include "rabbitmq-messaging-topology-operator.namespace" . }}
+  labels:
+    {{- include "rabbitmq-messaging-topology-operator.labels" . | nindent 4 }}
+spec:
+  ports:
+    - port: 443
+      protocol: TCP
+      targetPort: {{ .Values.webhook.containerPort }}
+  selector:
+    {{- include "rabbitmq-messaging-topology-operator.serviceSelectorLabels" . | nindent 4 }}
+

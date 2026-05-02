@@ -1,0 +1,98 @@
+---
+# -- Number of operator replicas to run.
+replicaCount: 1
+
+# -- Namespace in which the operator and its resources will be installed.
+namespace: rabbitmq-system
+
+# -- Whether to create the namespace. Set to false if it already exists.
+createNamespace: true
+
+image:
+  # -- Operator container image repository.
+  repository: ghcr.io/rabbitmq/cluster-operator
+  # -- Operator container image tag. Defaults to the chart appVersion.
+  tag: ""
+  # -- Image pull policy.
+  pullPolicy: IfNotPresent
+  # -- Optional list of image pull secrets.
+  pullSecrets: []
+  # - name: my-registry-secret
+
+# -- Optional annotations to add to the operator Deployment.
+deploymentAnnotations: {}
+
+# -- Optional annotations to add to the operator Pods.
+podAnnotations: {}
+
+# -- Optional labels to add to the operator Pods.
+podLabels: {}
+
+# -- Resource requests and limits for the operator container.
+resources:
+  limits:
+    cpu: 200m
+    memory: 500Mi
+  requests:
+    cpu: 200m
+    memory: 500Mi
+
+# -- Security context applied at the Pod level.
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+
+# -- Security context applied to the operator container.
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+
+# -- Node selector for operator Pod scheduling.
+nodeSelector: {}
+
+# -- Tolerations for operator Pod scheduling.
+tolerations: []
+
+# -- Affinity rules for operator Pod scheduling.
+affinity: {}
+
+# -- Termination grace period in seconds for the operator Pod.
+terminationGracePeriodSeconds: 10
+
+# -- Additional environment variables to set on the operator container.
+extraEnv: []
+# - name: MY_VAR
+#   value: my-value
+
+# -- Additional arguments to pass to the operator binary.
+extraArgs: []
+# - --feature-gates=SomeFeature=true
+
+metrics:
+  # -- Whether to create the metrics Service.
+  enabled: true
+  # -- Port exposed by the metrics Service.
+  port: 8080
+  # -- Optional annotations for the metrics Service (e.g. Prometheus scraping).
+  serviceAnnotations: {}
+  # prometheus.io/scrape: "true"
+  # prometheus.io/port: "8080"
+
+rbac:
+  # -- Whether to create RBAC resources (Roles, ClusterRoles, Bindings).
+  create: true
+
+serviceAccount:
+  # -- Whether to create a ServiceAccount for the operator.
+  create: true
+  # -- Name of the ServiceAccount. Defaults to "rabbitmq-cluster-operator".
+  name: ""
+  # -- Annotations to add to the ServiceAccount.
+  annotations: {}

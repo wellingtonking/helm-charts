@@ -1,0 +1,88 @@
+---
+# ─────────────────────────────────────────────────────────────────────────────
+# Example: RabbitMQ User managed by the Messaging Topology Operator
+#
+# Pre-requisites:
+#   1. rabbitmq-cluster-operator is installed.
+#   2. rabbitmq-messaging-topology-operator is installed.
+#   3. A RabbitmqCluster named "my-rabbitmq" exists in the same namespace.
+#      (swap the name/namespace in rabbitmqClusterReference below if different)
+#
+# Apply with:
+#   kubectl apply -f user.yaml -n <your-namespace>
+#
+# After creation the operator writes the final credentials into a Secret named
+# <user-resource-name>-user-credentials in the same namespace.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── 1. Secret that seeds the user's credentials ──────────────────────────────
+# Provide either a plain-text `password` key OR a pre-hashed `passwordHash`
+# (SHA-512). Both are accepted; `passwordHash` takes priority when present.
+# The `username` key is always required.
+#
+# Generate a bcrypt-style SHA-512 hash (example):
+#   echo -n "s3cr3t!" | openssl dgst -sha512 | awk '{print $2}'
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sample-rabbit-user-credentials
+  # Keep this Secret in the same namespace as the User resource.
+  namespace: default
+type: Opaque
+stringData:
+  username: sample-rabbit-user
+  # Plain-text password — the operator will hash it before sending to RabbitMQ.
+  password: "s3cr3t!"
+---
+# ── 2. User resource ─────────────────────────────────────────────────────────
+apiVersion: rabbitmq.com/v1beta1
+kind: User
+metadata:
+  name: sample-rabbit-user
+  namespace: default
+spec:
+  # Point to an existing RabbitmqCluster.
+  rabbitmqClusterReference:
+    # Name of the RabbitmqCluster CR.
+    name: my-rabbitmq
+    # Namespace of the cluster — omit if it is the same as this User.
+    namespace: default
+
+  # Seed credentials from the Secret above.
+  # Omit this block entirely to let the operator auto-generate a random
+  # username and password (stored in <name>-user-credentials Secret).
+  importCredentialsSecret:
+    name: sample-rabbit-user-credentials
+
+  # Management UI permission tags:
+  #   management    – read-only access to the management UI
+  #   policymaker   – can manage policies
+  #   monitoring    – can access the monitoring endpoints
+  #   administrator – full management UI access
+  tags:
+    - management
+
+  # Optional per-user resource limits.
+  # Useful in multi-tenant clusters to prevent a single user from exhausting
+  # connections or channels.
+  limits:
+    connections: 50
+    channels: 200
+---
+# ── 3. Auto-generated credentials variant (no imported Secret) ───────────────
+# When importCredentialsSecret is omitted the operator generates a random
+# username + password and stores them in a Secret called
+# "autogen-rabbit-user-user-credentials" in the same namespace.
+#
+# Uncomment to try it:
+#
+# apiVersion: rabbitmq.com/v1beta1
+# kind: User
+# metadata:
+#   name: autogen-rabbit-user
+#   namespace: default
+# spec:
+#   rabbitmqClusterReference:
+#     name: my-rabbitmq
+#   tags:
+#     - monitoring

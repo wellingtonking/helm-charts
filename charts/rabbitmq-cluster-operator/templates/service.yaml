@@ -1,0 +1,22 @@
+{{- if .Values.metrics.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-cluster-operator-metrics-service
+  namespace: {{ include "rabbitmq-cluster-operator.namespace" . }}
+  labels:
+    {{- include "rabbitmq-cluster-operator.labels" . | nindent 4 }}
+  {{- with .Values.metrics.serviceAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  ports:
+    - name: http
+      port: {{ .Values.metrics.port }}
+      protocol: TCP
+      targetPort: {{ .Values.metrics.port }}
+  selector:
+    app.kubernetes.io/name: rabbitmq-cluster-operator
+{{- end }}
+

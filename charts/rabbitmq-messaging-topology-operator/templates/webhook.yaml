@@ -1,0 +1,274 @@
+{{- $ns := include "rabbitmq-messaging-topology-operator.namespace" . }}
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: messaging-topology-validating-webhook-configuration
+  labels:
+    {{- include "rabbitmq-messaging-topology-operator.labels" . | nindent 4 }}
+  {{- if .Values.certManager.enabled }}
+  annotations:
+    cert-manager.io/inject-ca-from: >-
+      {{ $ns }}/messaging-topology-serving-cert
+  {{- end }}
+webhooks:
+  - name: vbinding-v1beta1.kb.io
+    admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: messaging-topology-webhook-service
+        namespace: {{ $ns }}
+        path: /validate-rabbitmq-com-v1beta1-binding
+    failurePolicy: Fail
+    rules:
+      - apiGroups:
+          - rabbitmq.com
+        apiVersions:
+          - v1beta1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - bindings
+    sideEffects: None
+  - name: vexchange.kb.io
+    admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: messaging-topology-webhook-service
+        namespace: {{ $ns }}
+        path: /validate-rabbitmq-com-v1beta1-exchange
+    failurePolicy: Fail
+    rules:
+      - apiGroups:
+          - rabbitmq.com
+        apiVersions:
+          - v1beta1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - exchanges
+    sideEffects: None
+  - name: vfederation.kb.io
+    admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: messaging-topology-webhook-service
+        namespace: {{ $ns }}
+        path: /validate-rabbitmq-com-v1beta1-federation
+    failurePolicy: Fail
+    rules:
+      - apiGroups:
+          - rabbitmq.com
+        apiVersions:
+          - v1beta1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - federations
+    sideEffects: None
+  - name: voperatorpolicy-v1beta1.kb.io
+    admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: messaging-topology-webhook-service
+        namespace: {{ $ns }}
+        path: /validate-rabbitmq-com-v1beta1-operatorpolicy
+    failurePolicy: Fail
+    rules:
+      - apiGroups:
+          - rabbitmq.com
+        apiVersions:
+          - v1beta1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - operatorpolicies
+    sideEffects: None
+  - name: vpermission-v1beta1.kb.io
+    admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: messaging-topology-webhook-service
+        namespace: {{ $ns }}
+        path: /validate-rabbitmq-com-v1beta1-permission
+    failurePolicy: Fail
+    rules:
+      - apiGroups:
+          - rabbitmq.com
+        apiVersions:
+          - v1beta1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - permissions
+    sideEffects: None
+  - name: vpolicy.kb.io
+    admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: messaging-topology-webhook-service
+        namespace: {{ $ns }}
+        path: /validate-rabbitmq-com-v1beta1-policy
+    failurePolicy: Fail
+    rules:
+      - apiGroups:
+          - rabbitmq.com
+        apiVersions:
+          - v1beta1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - policies
+    sideEffects: None
+  - name: vqueue.kb.io
+    admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: messaging-topology-webhook-service
+        namespace: {{ $ns }}
+        path: /validate-rabbitmq-com-v1beta1-queue
+    failurePolicy: Fail
+    rules:
+      - apiGroups:
+          - rabbitmq.com
+        apiVersions:
+          - v1beta1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - queues
+    sideEffects: None
+  - name: vschemareplication-v1beta1.kb.io
+    admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: messaging-topology-webhook-service
+        namespace: {{ $ns }}
+        path: /validate-rabbitmq-com-v1beta1-schemareplication
+    failurePolicy: Fail
+    rules:
+      - apiGroups:
+          - rabbitmq.com
+        apiVersions:
+          - v1beta1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - schemareplications
+    sideEffects: None
+  - name: vshovel-v1beta1.kb.io
+    admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: messaging-topology-webhook-service
+        namespace: {{ $ns }}
+        path: /validate-rabbitmq-com-v1beta1-shovel
+    failurePolicy: Fail
+    rules:
+      - apiGroups:
+          - rabbitmq.com
+        apiVersions:
+          - v1beta1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - shovels
+    sideEffects: None
+  - name: vsuperstream-v1alpha1.kb.io
+    admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: messaging-topology-webhook-service
+        namespace: {{ $ns }}
+        path: /validate-rabbitmq-com-v1alpha1-superstream
+    failurePolicy: Fail
+    rules:
+      - apiGroups:
+          - rabbitmq.com
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - superstreams
+    sideEffects: None
+  - name: vtopicpermission-v1beta1.kb.io
+    admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: messaging-topology-webhook-service
+        namespace: {{ $ns }}
+        path: /validate-rabbitmq-com-v1beta1-topicpermission
+    failurePolicy: Fail
+    rules:
+      - apiGroups:
+          - rabbitmq.com
+        apiVersions:
+          - v1beta1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - topicpermissions
+    sideEffects: None
+  - name: vuser.kb.io
+    admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: messaging-topology-webhook-service
+        namespace: {{ $ns }}
+        path: /validate-rabbitmq-com-v1beta1-user
+    failurePolicy: Fail
+    rules:
+      - apiGroups:
+          - rabbitmq.com
+        apiVersions:
+          - v1beta1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - users
+    sideEffects: None
+  - name: vvhost.kb.io
+    admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: messaging-topology-webhook-service
+        namespace: {{ $ns }}
+        path: /validate-rabbitmq-com-v1beta1-vhost
+    failurePolicy: Fail
+    rules:
+      - apiGroups:
+          - rabbitmq.com
+        apiVersions:
+          - v1beta1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - vhosts
+    sideEffects: None
+

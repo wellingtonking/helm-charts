@@ -2,7 +2,7 @@ apiVersion: v1
 entries:
   applications:
   - apiVersion: v2
-    created: "2026-05-01T23:09:33.417408-04:00"
+    created: "2026-05-13T21:15:37.252258-04:00"
     description: 'ArgoCD Application CRD generator v2. Loops over a list of application
       definitions and renders ArgoCD Application objects with full support for multi-source,
       Helm/Kustomize/Directory/Plugin source types, ignoreDifferences, rich syncPolicy,
@@ -16,7 +16,7 @@ entries:
   cloudflared-remote:
   - apiVersion: v2
     appVersion: 2026.3.0
-    created: "2026-05-01T23:09:33.418634-04:00"
+    created: "2026-05-13T21:15:37.253188-04:00"
     description: Minimal Helm chart for a remotely managed Cloudflare Tunnel
     digest: f320bc86235c9b1619d082efcdf7b87374b6257982d15866c37a2a7e0abd03e1
     maintainers:
@@ -28,12 +28,27 @@ entries:
     urls:
     - https://wellingtonking.github.io/helm-charts/cloudflared-remote-0.1.0.tgz
     version: 0.1.0
+  onepassworditem:
+  - apiVersion: v2
+    created: "2026-05-13T21:15:37.253436-04:00"
+    description: Minimal Helm chart that provides a onepassworditem template to be
+      used with the 1Password Connect Kubernetes Operator.
+    digest: 4cd2a8602d7b4fd34f8ac1048365790e13b9e9b754754120d4f4e6b4c7bc637e
+    maintainers:
+    - email: cdemers@wellingtonking.com
+      name: cdemers
+      url: https://wellingtonking.com
+    name: onepassworditem
+    type: application
+    urls:
+    - https://wellingtonking.github.io/helm-charts/onepassworditem-0.1.0.tgz
+    version: 0.1.0
   rabbitmq-cluster-operator:
   - annotations:
       artifacthub.io/category: streaming-messaging
     apiVersion: v2
     appVersion: 2.20.1
-    created: "2026-05-01T23:09:33.420961-04:00"
+    created: "2026-05-13T21:15:37.255799-04:00"
     description: 'A Helm chart for the RabbitMQ Cluster Operator, which manages RabbitMQ
       clusters deployed to Kubernetes as a custom resource. '
     digest: 406143c248209c1022e5bb88be9b8fa164a830aad27606e1db6f01f1809ccbde
@@ -57,7 +72,7 @@ entries:
       artifacthub.io/category: streaming-messaging
     apiVersion: v2
     appVersion: 1.19.1
-    created: "2026-05-01T23:09:33.421849-04:00"
+    created: "2026-05-13T21:15:37.257108-04:00"
     description: 'A Helm chart for the RabbitMQ Messaging Topology Operator, which
       manages RabbitMQ messaging topology objects (queues, exchanges, bindings, users,
       vhosts, etc.) as Kubernetes custom resources. '
@@ -78,4 +93,4 @@ entries:
     urls:
     - https://wellingtonking.github.io/helm-charts/rabbitmq-messaging-topology-operator-0.0.1.tgz
     version: 0.0.1
-generated: "2026-05-01T23:09:33.414475-04:00"
+generated: "2026-05-13T21:15:37.250748-04:00"

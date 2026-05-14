@@ -1,0 +1,14 @@
+---
+namespaceOverride: ""
+
+items:
+  enabled: true
+  items:
+    - name: my-secret-name
+      itemPath: "vaults/My Vault Name/items/My Item Name"
+      autoRestart: true
+      secretType: "Opaque"
+      annotations:
+        my-annotation-key: "my-annotation-value"
+      labels:
+        my-label-key: "my-label-value"

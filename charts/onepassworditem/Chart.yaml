@@ -1,0 +1,11 @@
+---
+apiVersion: v2
+name: onepassworditem
+description: Minimal Helm chart that provides a onepassworditem template to be
+  used with the 1Password Connect Kubernetes Operator.
+maintainers:
+  - name: cdemers
+    email: cdemers@wellingtonking.com
+    url: https://wellingtonking.com
+type: application
+version: 1.0.0

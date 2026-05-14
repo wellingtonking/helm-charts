@@ -1,0 +1,9 @@
+---
+namespaceOverride: ""
+
+items:
+  enabled: true
+  items: []
+
+#    - name: my-secret-name
+#      itemPath: "vaults/My Vault Name/items/My Item Name"

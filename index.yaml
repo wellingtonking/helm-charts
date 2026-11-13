@@ -28,7 +28,28 @@ entries:
     urls:
     - https://wellingtonking.github.io/helm-charts/cloudflared-remote-0.1.0.tgz
     version: 0.1.0
+  mendicant-agent:
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2026-11-13T16:02:45.704284-05:00"
+    description: Serial Mendicant reference worker using the outbound work protocol
+    digest: db18095fa68ec5d27ccfba2a1b596cb4e24bd4976e577428d3fbb0866712a41f
+    name: mendicant-agent
+    type: application
+    urls:
+    - https://wellingtonking.github.io/helm-charts/mendicant-agent-0.1.0.tgz
+    version: 0.1.0
   mendicant-server:
+  - apiVersion: v2
+    appVersion: 0.2.0
+    created: "2026-11-13T16:02:45.704749-05:00"
+    description: Mendicant assessment API with an operator-managed development database
+    digest: 1582fd2120f9c708c2c74fb3539e24ebf99e1448bdd18d75d3c1cacb2739d23e
+    name: mendicant-server
+    type: application
+    urls:
+    - https://wellingtonking.github.io/helm-charts/mendicant-server-0.2.0.tgz
+    version: 0.2.0
   - apiVersion: v2
     appVersion: 0.1.0
     created: "2026-11-13T14:32:16.296982-05:00"
@@ -104,4 +125,4 @@ entries:
     urls:
     - https://wellingtonking.github.io/helm-charts/rabbitmq-messaging-topology-operator-0.0.1.tgz
     version: 0.0.1
-generated: "2026-11-13T14:32:16.296191-05:00"
+generated: "2026-11-13T16:02:45.701366-05:00"

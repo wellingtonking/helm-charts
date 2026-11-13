@@ -1,0 +1,76 @@
+{{- if .Values.bootstrap.enabled }}
+# Enable only after MariaDB and both credential items are ready. Never retry partial DDL blindly.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mendicant-bootstrap-{{ .Values.bootstrap.revision }}
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 120
+  template:
+    metadata:
+      labels:
+        {{- include "mendicant.labels" . | nindent 8 }}
+        app.kubernetes.io/component: bootstrap
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: bootstrap
+          image: {{ include "mendicant.image" . | quote }}
+          command: [/bin/sh, -ec]
+          args:
+            - |
+              python -m mendicant_server.cli migrate
+              python -m mendicant_server.cli seed-dev --reference-lock /app/reference/reference-lock.json --tokens-dir /run/tokens --provisioned-tokens
+              python -m mendicant_server.cli import-reference --application-id 4a096532-9108-56b6-b2b0-f4bc041e0ea4 --assessment /app/reference/valkey-assessment.json
+          env:
+            - name: MENDICANT_DATABASE_URL_FILE
+              value: /run/database/migrator-url
+            - name: MENDICANT_DATABASE_PASSWORD_FILE
+              value: /run/database/migrator-password
+          volumeMounts:
+            - name: database
+              mountPath: /run/database
+              readOnly: true
+            - name: tokens
+              mountPath: /run/tokens
+              readOnly: true
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              memory: 256Mi
+      volumes:
+        - name: database
+          secret:
+            secretName: {{ .Values.secrets.database }}
+            defaultMode: 0440
+            items:
+              - key: migrator-url
+                path: migrator-url
+              - key: migrator-password
+                path: migrator-password
+        - name: tokens
+          secret:
+            secretName: {{ .Values.secrets.tokens }}
+            defaultMode: 0440
+{{- end }}

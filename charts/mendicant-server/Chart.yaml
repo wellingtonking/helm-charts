@@ -1,0 +1,6 @@
+apiVersion: v2
+name: mendicant-server
+description: Mendicant assessment API with an operator-managed development database
+type: application
+version: 0.1.0
+appVersion: 0.1.0

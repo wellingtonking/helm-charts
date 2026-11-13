@@ -1,0 +1,7 @@
+image:
+  digest: sha256:0000000000000000000000000000000000000000000000000000000000000000
+onePassword:
+  databaseItemPath: vaults/test/items/database
+  tokensItemPath: vaults/test/items/tokens
+bootstrap:
+  enabled: true

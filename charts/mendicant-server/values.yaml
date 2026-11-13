@@ -1,0 +1,22 @@
+replicaCount: 1
+image:
+  repository: ghcr.io/wellingtonking/app-mendicant/server
+  digest: ""
+  pullSecrets: []
+secrets:
+  database: mendicant-mariadb
+  tokens: mendicant-development-tokens
+onePassword:
+  databaseItemPath: ""
+  tokensItemPath: ""
+database:
+  image: docker-registry1.mariadb.com/library/mariadb:11.8.5
+  storageClassName: openebs-hostpath
+  storageSize: 1Gi
+bootstrap:
+  enabled: false
+  revision: initial
+networkPolicy:
+  argoNamespace: argo
+  argoInstance: argocd-ai01-p720
+  operatorNamespace: mariadb-operator

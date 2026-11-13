@@ -1,0 +1,51 @@
+apiVersion: k8s.mariadb.com/v1alpha1
+kind: MariaDB
+metadata:
+  name: mendicant-mariadb
+spec:
+  replicas: 1
+  image: {{ .Values.database.image | quote }}
+  rootPasswordSecretKeyRef:
+    name: {{ .Values.secrets.database }}
+    key: root-password
+  username: mendicant_migrator
+  passwordSecretKeyRef:
+    name: {{ .Values.secrets.database }}
+    key: migrator-password
+  database: mendicant
+  storage:
+    storageClassName: {{ .Values.database.storageClassName }}
+    size: {{ .Values.database.storageSize }}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 1Gi
+---
+apiVersion: k8s.mariadb.com/v1alpha1
+kind: User
+metadata:
+  name: mendicant-runtime
+spec:
+  mariaDbRef:
+    name: mendicant-mariadb
+  name: mendicant_runtime
+  passwordSecretKeyRef:
+    name: {{ .Values.secrets.database }}
+    key: runtime-password
+  host: "%"
+---
+apiVersion: k8s.mariadb.com/v1alpha1
+kind: Grant
+metadata:
+  name: mendicant-runtime
+spec:
+  mariaDbRef:
+    name: mendicant-mariadb
+  privileges: [SELECT]
+  database: mendicant
+  table: "*"
+  username: mendicant_runtime
+  host: "%"
+  grantOption: false

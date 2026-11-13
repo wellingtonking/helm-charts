@@ -28,6 +28,17 @@ entries:
     urls:
     - https://wellingtonking.github.io/helm-charts/cloudflared-remote-0.1.0.tgz
     version: 0.1.0
+  mendicant-server:
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2026-11-13T14:32:16.296982-05:00"
+    description: Mendicant assessment API with an operator-managed development database
+    digest: ab998122df9859f358f57c8b27f9c81b172b04f418e76cd8387753744306d464
+    name: mendicant-server
+    type: application
+    urls:
+    - https://wellingtonking.github.io/helm-charts/mendicant-server-0.1.0.tgz
+    version: 0.1.0
   onepassworditem:
   - apiVersion: v2
     created: "2026-05-14T16:54:34.730587-04:00"
@@ -93,4 +104,4 @@ entries:
     urls:
     - https://wellingtonking.github.io/helm-charts/rabbitmq-messaging-topology-operator-0.0.1.tgz
     version: 0.0.1
-generated: "2026-05-14T16:54:34.729255-04:00"
+generated: "2026-11-13T14:32:16.296191-05:00"

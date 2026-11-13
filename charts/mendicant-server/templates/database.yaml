@@ -43,7 +43,7 @@ metadata:
 spec:
   mariaDbRef:
     name: mendicant-mariadb
-  privileges: [SELECT]
+  privileges: [SELECT, INSERT, UPDATE]
   database: mendicant
   table: "*"
   username: mendicant_runtime

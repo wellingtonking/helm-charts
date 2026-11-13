@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mendicant-agent
+  labels:
+    app.kubernetes.io/name: mendicant-agent
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  replicas: 1
+  # Two pods sharing one agent identity would compete for the same durable claim slot.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mendicant-agent
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mendicant-agent
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      terminationGracePeriodSeconds: 10
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: agent
+          image: {{ printf "%s@%s" .Values.image.repository (required "image.digest is required" .Values.image.digest) | quote }}
+          env:
+            - name: MENDICANT_SERVER_URL
+              value: {{ required "serverURL is required" .Values.serverURL | quote }}
+            - name: MENDICANT_AGENT_TOKEN_FILE
+              value: /run/agent/token
+            - name: MENDICANT_REFERENCE_DELAY_SECONDS
+              value: {{ .Values.referenceDelaySeconds | quote }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: credential
+              mountPath: /run/agent
+              readOnly: true
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+      volumes:
+        - name: credential
+          secret:
+            secretName: {{ .Values.token.secretName }}
+            defaultMode: 0440
+            items:
+              - key: {{ .Values.token.key }}
+                path: token

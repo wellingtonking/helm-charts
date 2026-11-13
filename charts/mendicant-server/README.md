@@ -16,7 +16,7 @@ The migrator URL uses `mendicant_migrator`; the runtime URL uses `mendicant_runt
 Both use database `mendicant` on `mendicant-mariadb.<namespace>.svc.cluster.local:3306`.
 URLs may retain `<migrator-password>` or `<runtime-password>` in their password position.
 Each process receives only its corresponding URL and raw password fields.
-The runtime database account has SELECT permission only.
+The work runtime has SELECT, INSERT, and UPDATE permissions only; DDL remains with migration credentials.
 
 The token item provides independent `wk-proxy`, `wk-agent`, `isolation-test-proxy`, and `isolation-test-agent` tokens.
 Each token must contain exactly 43 URL-safe characters from a cryptographically random generator.
@@ -40,6 +40,8 @@ The Service is cluster-internal. NetworkPolicies admit ArgoCD server pods to the
 The configured MariaDB Operator namespace can also reach MariaDB for reconciliation.
 Swagger remains disabled in the cluster.
 The API receives neither root/migrator credentials nor integration bearer tokens.
+The optional worker can reach the API from the same release/namespace but receives no database access.
+For the work-loop upgrade, stop API replicas, use a new bootstrap revision for migration 0002 and agent bindings, then start the new API before enabling the worker.
 
 Keep the completed bootstrap Job until an explicit later cleanup. Do not rerun it merely because the server restarts.
 Roll back the server image by restoring a previous digest; schema rollback requires separate review.

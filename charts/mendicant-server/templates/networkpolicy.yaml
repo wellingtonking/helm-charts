@@ -18,6 +18,13 @@ spec:
             matchLabels:
               app.kubernetes.io/name: argocd-server
               app.kubernetes.io/instance: {{ .Values.networkPolicy.argoInstance }}
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ .Release.Namespace }}
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: mendicant-agent
+              app.kubernetes.io/instance: {{ .Release.Name }}
       ports:
         - port: 8080
           protocol: TCP

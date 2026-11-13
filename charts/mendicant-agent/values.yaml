@@ -1,0 +1,10 @@
+enabled: true
+image:
+  repository: ghcr.io/wellingtonking/app-mendicant/agent
+  digest: ""
+  pullSecrets: []
+serverURL: ""
+token:
+  secretName: mendicant-development-tokens
+  key: wk-agent
+referenceDelaySeconds: 5

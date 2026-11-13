@@ -14,6 +14,7 @@ database:
   storageClassName: openebs-hostpath
   storageSize: 1Gi
 bootstrap:
+  enableDevelopmentTrivy: false
   enabled: false
   revision: initial
 networkPolicy:

@@ -36,6 +36,9 @@ spec:
               python -m mendicant_server.cli migrate
               python -m mendicant_server.cli seed-dev --reference-lock /app/reference/reference-lock.json --tokens-dir /run/tokens --provisioned-tokens
               python -m mendicant_server.cli import-reference --application-id 4a096532-9108-56b6-b2b0-f4bc041e0ea4 --assessment /app/reference/valkey-assessment.json
+              {{- if .Values.bootstrap.enableDevelopmentTrivy }}
+              python -m mendicant_server.cli enable-development-trivy
+              {{- end }}
           env:
             - name: MENDICANT_DATABASE_URL_FILE
               value: /run/database/migrator-url

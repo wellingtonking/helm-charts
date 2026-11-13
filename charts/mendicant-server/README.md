@@ -46,3 +46,7 @@ For the work-loop upgrade, stop API replicas, use a new bootstrap revision for m
 Keep the completed bootstrap Job until an explicit later cleanup. Do not rerun it merely because the server restarts.
 Roll back the server image by restoring a previous digest; schema rollback requires separate review.
 A retained local persistent volume is not a backup. Rebuilding this environment requires the user-managed items and explicit bootstrap.
+
+For the pinned Trivy upgrade, stop API and worker, drain outstanding work, and migrate with a new bootstrap Job revision.
+Set `bootstrap.enableDevelopmentTrivy: true` only for this approved development profile. It explicitly activates W&K's scanner binding after migration and seeding.
+Do not mutate a completed Job or switch bindings while work is in flight.

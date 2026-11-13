@@ -1,6 +1,6 @@
 apiVersion: v2
 name: mendicant-agent
-description: Serial Mendicant reference worker using the outbound work protocol
+description: Serial Mendicant scanner worker using the outbound work protocol
 type: application
-version: 0.1.0
+version: 0.2.0
 appVersion: 0.1.0

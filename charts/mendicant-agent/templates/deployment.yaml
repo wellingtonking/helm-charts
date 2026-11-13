@@ -50,16 +50,21 @@ spec:
             capabilities:
               drop: [ALL]
           volumeMounts:
+            - name: scratch
+              mountPath: /tmp
             - name: credential
               mountPath: /run/agent
               readOnly: true
           resources:
             requests:
-              cpu: 50m
-              memory: 32Mi
+              cpu: 250m
+              memory: 512Mi
             limits:
-              memory: 128Mi
+              memory: 2Gi
       volumes:
+        - name: scratch
+          emptyDir:
+            sizeLimit: 2Gi
         - name: credential
           secret:
             secretName: {{ .Values.token.secretName }}

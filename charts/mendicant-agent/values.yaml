@@ -8,3 +8,9 @@ token:
   secretName: mendicant-development-tokens
   key: wk-agent
 referenceDelaySeconds: 5
+
+# Enable only after the user-managed ArgoCD credential item is available.
+discovery:
+  enabled: false
+  secretName: mendicant-argocd-discovery
+  onePasswordItemPath: ""

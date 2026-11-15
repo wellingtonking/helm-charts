@@ -20,3 +20,11 @@ Authentication or permanent protocol errors stop the process and produce a safe 
 
 The parent environment must allow this pod to reach the Mendicant API. Do not grant database access to the worker.
 The source repository's `mendicant-agent/docs/operations/TRIVY_WORKER.md` owns runtime configuration and validation details.
+
+## Optional ArgoCD Discovery Access
+
+Discovery credential projection is disabled by default. Enable `discovery.enabled` only after the user-managed item exists.
+Set `discovery.onePasswordItemPath` and `discovery.secretName`; the chart creates the OnePasswordItem and mounts only `token` and `server-url` at `/run/argocd`, read-only.
+The corresponding file-path variables are `MENDICANT_ARGOCD_TOKEN_FILE` and `MENDICANT_ARGOCD_SERVER_URL_FILE`.
+The existing worker image does not yet consume these discovery settings; this chart prepares access for the planned adapter.
+The ArgoCD account needs independently managed, scoped Application-read grants. No Kubernetes API role or service-account token is added.

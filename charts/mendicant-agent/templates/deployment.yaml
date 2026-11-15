@@ -44,6 +44,12 @@ spec:
               value: /run/agent/token
             - name: MENDICANT_REFERENCE_DELAY_SECONDS
               value: {{ .Values.referenceDelaySeconds | quote }}
+            {{- if .Values.discovery.enabled }}
+            - name: MENDICANT_ARGOCD_TOKEN_FILE
+              value: /run/argocd/token
+            - name: MENDICANT_ARGOCD_SERVER_URL_FILE
+              value: /run/argocd/server-url
+            {{- end }}
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
@@ -55,6 +61,11 @@ spec:
             - name: credential
               mountPath: /run/agent
               readOnly: true
+            {{- if .Values.discovery.enabled }}
+            - name: argocd-discovery
+              mountPath: /run/argocd
+              readOnly: true
+            {{- end }}
           resources:
             requests:
               cpu: 250m
@@ -72,3 +83,15 @@ spec:
             items:
               - key: {{ .Values.token.key }}
                 path: token
+
+        {{- if .Values.discovery.enabled }}
+        - name: argocd-discovery
+          secret:
+            secretName: {{ required "discovery.secretName is required" .Values.discovery.secretName }}
+            defaultMode: 0440
+            items:
+              - key: token
+                path: token
+              - key: server-url
+                path: server-url
+        {{- end }}

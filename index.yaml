@@ -2,7 +2,7 @@ apiVersion: v1
 entries:
   applications:
   - apiVersion: v2
-    created: "2026-11-13T17:42:55.354344-05:00"
+    created: "2026-11-14T20:47:23.578546-05:00"
     description: 'ArgoCD Application CRD generator v2. Loops over a list of application
       definitions and renders ArgoCD Application objects with full support for multi-source,
       Helm/Kustomize/Directory/Plugin source types, ignoreDifferences, rich syncPolicy,
@@ -16,7 +16,7 @@ entries:
   cloudflared-remote:
   - apiVersion: v2
     appVersion: 2026.3.0
-    created: "2026-11-13T17:42:55.356152-05:00"
+    created: "2026-11-14T20:47:23.579557-05:00"
     description: Minimal Helm chart for a remotely managed Cloudflare Tunnel
     digest: f320bc86235c9b1619d082efcdf7b87374b6257982d15866c37a2a7e0abd03e1
     maintainers:
@@ -31,7 +31,17 @@ entries:
   mendicant-agent:
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2026-11-13T17:42:55.357792-05:00"
+    created: "2026-11-14T20:47:23.581345-05:00"
+    description: Serial Mendicant scanner worker using the outbound work protocol
+    digest: f6e3dce0ed41ce79768dd4435eac2ad8c61d7819df66efe7fa98991845cfea9a
+    name: mendicant-agent
+    type: application
+    urls:
+    - https://wellingtonking.github.io/helm-charts/mendicant-agent-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2026-11-14T20:47:23.58067-05:00"
     description: Serial Mendicant scanner worker using the outbound work protocol
     digest: 5516f66441619a8ef721304d6aaf8a2d99646a4c330b9e98f9d2919a7610c16c
     name: mendicant-agent
@@ -41,7 +51,7 @@ entries:
     version: 0.2.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2026-11-13T17:42:55.357405-05:00"
+    created: "2026-11-14T20:47:23.580088-05:00"
     description: Serial Mendicant reference worker using the outbound work protocol
     digest: db18095fa68ec5d27ccfba2a1b596cb4e24bd4976e577428d3fbb0866712a41f
     name: mendicant-agent
@@ -52,7 +62,7 @@ entries:
   mendicant-server:
   - apiVersion: v2
     appVersion: 0.2.0
-    created: "2026-11-13T17:42:55.361905-05:00"
+    created: "2026-11-14T20:47:23.583649-05:00"
     description: Mendicant assessment API with an operator-managed development database
     digest: 5fb9de826cae0c0b0c19f7541123d01f9ef431c139f993807ac2e2371063daf2
     name: mendicant-server
@@ -62,7 +72,7 @@ entries:
     version: 0.3.0
   - apiVersion: v2
     appVersion: 0.2.0
-    created: "2026-11-13T17:42:55.359599-05:00"
+    created: "2026-11-14T20:47:23.58279-05:00"
     description: Mendicant assessment API with an operator-managed development database
     digest: 1582fd2120f9c708c2c74fb3539e24ebf99e1448bdd18d75d3c1cacb2739d23e
     name: mendicant-server
@@ -72,7 +82,7 @@ entries:
     version: 0.2.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2026-11-13T17:42:55.358615-05:00"
+    created: "2026-11-14T20:47:23.582184-05:00"
     description: Mendicant assessment API with an operator-managed development database
     digest: ab998122df9859f358f57c8b27f9c81b172b04f418e76cd8387753744306d464
     name: mendicant-server
@@ -82,7 +92,7 @@ entries:
     version: 0.1.0
   onepassworditem:
   - apiVersion: v2
-    created: "2026-11-13T17:42:55.362938-05:00"
+    created: "2026-11-14T20:47:23.584301-05:00"
     description: Minimal Helm chart that provides a onepassworditem template to be
       used with the 1Password Connect Kubernetes Operator.
     digest: b96a5ca4b778ca44b0df227772b98f0d0e1c5d9419a7335de3a66de3d932c9d8
@@ -100,7 +110,7 @@ entries:
       artifacthub.io/category: streaming-messaging
     apiVersion: v2
     appVersion: 2.20.1
-    created: "2026-11-13T17:42:55.370572-05:00"
+    created: "2026-11-14T20:47:23.586514-05:00"
     description: 'A Helm chart for the RabbitMQ Cluster Operator, which manages RabbitMQ
       clusters deployed to Kubernetes as a custom resource. '
     digest: 406143c248209c1022e5bb88be9b8fa164a830aad27606e1db6f01f1809ccbde
@@ -124,7 +134,7 @@ entries:
       artifacthub.io/category: streaming-messaging
     apiVersion: v2
     appVersion: 1.19.1
-    created: "2026-11-13T17:42:55.386626-05:00"
+    created: "2026-11-14T20:47:23.587978-05:00"
     description: 'A Helm chart for the RabbitMQ Messaging Topology Operator, which
       manages RabbitMQ messaging topology objects (queues, exchanges, bindings, users,
       vhosts, etc.) as Kubernetes custom resources. '
@@ -145,4 +155,4 @@ entries:
     urls:
     - https://wellingtonking.github.io/helm-charts/rabbitmq-messaging-topology-operator-0.0.1.tgz
     version: 0.0.1
-generated: "2026-11-13T17:42:55.353092-05:00"
+generated: "2026-11-14T20:47:23.577317-05:00"

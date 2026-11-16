@@ -1,4 +1,5 @@
 enabled: true
+replicaCount: 1
 image:
   repository: ghcr.io/wellingtonking/app-mendicant/agent
   digest: ""
@@ -7,7 +8,6 @@ serverURL: ""
 token:
   secretName: mendicant-development-tokens
   key: wk-agent
-referenceDelaySeconds: 5
 
 # Enable only after the user-managed ArgoCD credential item is available.
 discovery:

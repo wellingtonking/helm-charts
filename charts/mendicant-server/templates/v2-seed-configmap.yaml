@@ -1,0 +1,9 @@
+{{- if and .Values.bootstrap.enabled .Values.bootstrap.v2Configuration }}
+# Credential-free mappings/profile are reviewed alongside the deployed source.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mendicant-v2-seed
+data:
+  v2.json: {{ .Values.bootstrap.v2Configuration | toJson | quote }}
+{{- end }}

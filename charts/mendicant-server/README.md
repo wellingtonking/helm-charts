@@ -50,3 +50,11 @@ A retained local persistent volume is not a backup. Rebuilding this environment 
 For the pinned Trivy upgrade, stop API and worker, drain outstanding work, and migrate with a new bootstrap Job revision.
 Set `bootstrap.enableDevelopmentTrivy: true` only for this approved development profile. It explicitly activates W&K's scanner binding after migration and seeding.
 Do not mutate a completed Job or switch bindings while work is in flight.
+
+## V2 Stopped Upgrade
+
+Version 0.4.0 accepts a credential-free `bootstrap.v2Configuration` object matching the reviewed server seed input.
+When configured, bootstrap runs only migration and `seed-v2`; it neither reimports reference findings nor changes legacy bindings.
+The ConfigMap mounts at `/run/configuration/v2.json`. Existing v1 organizations and principal credentials must already exist.
+Keep both API and worker replicas at zero until the uniquely named Job succeeds, then start the API and verify legacy reads before worker startup.
+The source repository owns schema 0005, guarded rollback, and the stopped-cutover acceptance procedure.

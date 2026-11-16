@@ -34,10 +34,14 @@ spec:
           args:
             - |
               python -m mendicant_server.cli migrate
+              {{- if .Values.bootstrap.v2Configuration }}
+              python -m mendicant_server.cli seed-v2 --configuration /run/configuration/v2.json
+              {{- else }}
               python -m mendicant_server.cli seed-dev --reference-lock /app/reference/reference-lock.json --tokens-dir /run/tokens --provisioned-tokens
               python -m mendicant_server.cli import-reference --application-id 4a096532-9108-56b6-b2b0-f4bc041e0ea4 --assessment /app/reference/valkey-assessment.json
               {{- if .Values.bootstrap.enableDevelopmentTrivy }}
               python -m mendicant_server.cli enable-development-trivy
+              {{- end }}
               {{- end }}
           env:
             - name: MENDICANT_DATABASE_URL_FILE
@@ -48,9 +52,15 @@ spec:
             - name: database
               mountPath: /run/database
               readOnly: true
+            {{- if .Values.bootstrap.v2Configuration }}
+            - name: configuration
+              mountPath: /run/configuration
+              readOnly: true
+            {{- else }}
             - name: tokens
               mountPath: /run/tokens
               readOnly: true
+            {{- end }}
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
@@ -72,8 +82,14 @@ spec:
                 path: migrator-url
               - key: migrator-password
                 path: migrator-password
+        {{- if .Values.bootstrap.v2Configuration }}
+        - name: configuration
+          configMap:
+            name: mendicant-v2-seed
+        {{- else }}
         - name: tokens
           secret:
             secretName: {{ .Values.secrets.tokens }}
             defaultMode: 0440
+        {{- end }}
 {{- end }}

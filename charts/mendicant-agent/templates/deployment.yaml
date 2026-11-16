@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/name: mendicant-agent
     app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   # Two pods sharing one agent identity would compete for the same durable claim slot.
   strategy:
     type: Recreate
@@ -42,14 +42,6 @@ spec:
               value: {{ required "serverURL is required" .Values.serverURL | quote }}
             - name: MENDICANT_AGENT_TOKEN_FILE
               value: /run/agent/token
-            - name: MENDICANT_REFERENCE_DELAY_SECONDS
-              value: {{ .Values.referenceDelaySeconds | quote }}
-            {{- if .Values.discovery.enabled }}
-            - name: MENDICANT_ARGOCD_TOKEN_FILE
-              value: /run/argocd/token
-            - name: MENDICANT_ARGOCD_SERVER_URL_FILE
-              value: /run/argocd/server-url
-            {{- end }}
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true

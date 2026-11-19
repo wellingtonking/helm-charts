@@ -14,3 +14,11 @@ discovery:
   enabled: false
   secretName: mendicant-argocd-discovery
   onePasswordItemPath: ""
+
+# Dedicated database snapshots, never mounted over immutable /app/cache.
+cache:
+  mode: pvc
+  size: 8Gi
+  maxBytes: "4294967296"
+  existingClaim: ""
+  storageClass: ""

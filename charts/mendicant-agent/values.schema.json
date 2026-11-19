@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "replicaCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "cache": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "size",
+        "maxBytes",
+        "existingClaim",
+        "storageClass"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "pvc",
+            "emptyDir"
+          ]
+        },
+        "size": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,5}(Mi|Gi|Ti)$"
+        },
+        "maxBytes": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]{0,12}$"
+        },
+        "existingClaim": {
+          "type": "string"
+        },
+        "storageClass": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{{- if and (eq .Values.cache.mode "pvc") (not .Values.cache.existingClaim) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mendicant-agent-cache
+  labels:
+    app.kubernetes.io/name: mendicant-agent
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  accessModes: [ReadWriteOnce]
+  {{- if eq .Values.cache.storageClass "-" }}
+  storageClassName: ""
+  {{- else if .Values.cache.storageClass }}
+  storageClassName: {{ .Values.cache.storageClass | quote }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.cache.size | quote }}
+{{- end }}

@@ -1,3 +1,4 @@
+{{- include "mendicant-agent.validateCache" . -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -32,12 +33,17 @@ spec:
         runAsUser: 10001
         runAsGroup: 10001
         fsGroup: 10001
+        fsGroupChangePolicy: OnRootMismatch
         seccompProfile:
           type: RuntimeDefault
       containers:
         - name: agent
           image: {{ printf "%s@%s" .Values.image.repository (required "image.digest is required" .Values.image.digest) | quote }}
           env:
+            - name: MENDICANT_DATABASE_STORE
+              value: /var/lib/mendicant/database
+            - name: MENDICANT_DATABASE_STORE_MAX_BYTES
+              value: {{ .Values.cache.maxBytes | quote }}
             - name: MENDICANT_SERVER_URL
               value: {{ required "serverURL is required" .Values.serverURL | quote }}
             - name: MENDICANT_AGENT_TOKEN_FILE
@@ -48,6 +54,8 @@ spec:
             capabilities:
               drop: [ALL]
           volumeMounts:
+            - name: database-cache
+              mountPath: /var/lib/mendicant/database
             - name: scratch
               mountPath: /tmp
             - name: credential
@@ -65,6 +73,14 @@ spec:
             limits:
               memory: 2Gi
       volumes:
+        - name: database-cache
+          {{- if eq .Values.cache.mode "pvc" }}
+          persistentVolumeClaim:
+            claimName: {{ default "mendicant-agent-cache" .Values.cache.existingClaim | quote }}
+          {{- else }}
+          emptyDir:
+            sizeLimit: {{ .Values.cache.size | quote }}
+          {{- end }}
         - name: scratch
           emptyDir:
             sizeLimit: 2Gi

@@ -58,3 +58,14 @@ When configured, bootstrap runs only migration and `seed-v2`; it neither reimpor
 The ConfigMap mounts at `/run/configuration/v2.json`. Existing v1 organizations and principal credentials must already exist.
 Keep both API and worker replicas at zero until the uniquely named Job succeeds, then start the API and verify legacy reads before worker startup.
 The source repository owns schema 0005, guarded rollback, and the stopped-cutover acceptance procedure.
+
+## Recorded Periodic Reassessment
+
+Chart 0.5.0 exposes server scheduling for schema 0008 and its matching worker protocol.
+`scheduler.enabled` defaults to false. Enable it only after stopped migration and worker/storage readiness checks.
+`scheduler.reassessmentIntervalSeconds` and `scheduler.databaseRefreshIntervalSeconds` default to 86400; `scheduler.pollSeconds` defaults to 5.
+Keep settings identical across API replicas. Database transactions own due times and prevent duplicate admission.
+Short test intervals change schedule generations; restore both cadences to 86400 after acceptance.
+Disabling scheduling stops new admission and preserves due history and active work.
+The source server's `docs/operations/SCHEDULING.md` owns runtime semantics and recovery.
+Use the existing uniquely named bootstrap Job for explicit migration. Never restart an old image against schema 0008 as an implicit rollback.

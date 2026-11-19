@@ -36,6 +36,14 @@ spec:
             - name: http
               containerPort: 8080
           env:
+            - name: MENDICANT_SCHEDULER_ENABLED
+              value: {{ .Values.scheduler.enabled | quote }}
+            - name: MENDICANT_REASSESSMENT_INTERVAL_SECONDS
+              value: {{ .Values.scheduler.reassessmentIntervalSeconds | quote }}
+            - name: MENDICANT_DATABASE_REFRESH_INTERVAL_SECONDS
+              value: {{ .Values.scheduler.databaseRefreshIntervalSeconds | quote }}
+            - name: MENDICANT_SCHEDULER_POLL_SECONDS
+              value: {{ .Values.scheduler.pollSeconds | quote }}
             - name: MENDICANT_DATABASE_URL_FILE
               value: /run/database/runtime-url
             - name: MENDICANT_DATABASE_PASSWORD_FILE

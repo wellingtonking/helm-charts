@@ -23,3 +23,10 @@ networkPolicy:
   argoNamespace: argo
   argoInstance: argocd-ai01-p720
   operatorNamespace: mariadb-operator
+
+# Enable only after the explicit schema-0008 stopped upgrade.
+scheduler:
+  enabled: false
+  reassessmentIntervalSeconds: 86400
+  databaseRefreshIntervalSeconds: 86400
+  pollSeconds: 5

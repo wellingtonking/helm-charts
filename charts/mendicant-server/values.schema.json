@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "scheduler": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enabled",
+        "reassessmentIntervalSeconds",
+        "databaseRefreshIntervalSeconds",
+        "pollSeconds"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "reassessmentIntervalSeconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 31536000
+        },
+        "databaseRefreshIntervalSeconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 31536000
+        },
+        "pollSeconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 60
+        }
+      }
+    }
+  }
+}

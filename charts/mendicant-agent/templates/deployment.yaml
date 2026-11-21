@@ -17,6 +17,10 @@ spec:
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
+      {{- if .Values.publication.enabled }}
+      annotations:
+        checksum/integrations: {{ dict "discovery" .Values.discovery "publication" .Values.publication | toJson | sha256sum | quote }}
+      {{- end }}
       labels:
         app.kubernetes.io/name: mendicant-agent
         app.kubernetes.io/instance: {{ .Release.Name }}
@@ -40,6 +44,10 @@ spec:
         - name: agent
           image: {{ printf "%s@%s" .Values.image.repository (required "image.digest is required" .Values.image.digest) | quote }}
           env:
+            {{- if .Values.publication.enabled }}
+            - name: MENDICANT_INTEGRATIONS_FILE
+              value: /run/integrations/integrations.json
+            {{- end }}
             - name: MENDICANT_DATABASE_STORE
               value: /var/lib/mendicant/database
             - name: MENDICANT_DATABASE_STORE_MAX_BYTES
@@ -54,6 +62,14 @@ spec:
             capabilities:
               drop: [ALL]
           volumeMounts:
+            {{- if .Values.publication.enabled }}
+            - name: integrations
+              mountPath: /run/integrations
+              readOnly: true
+            - name: argocd-publication
+              mountPath: /run/argocd-publication
+              readOnly: true
+            {{- end }}
             - name: database-cache
               mountPath: /var/lib/mendicant/database
             - name: scratch
@@ -73,6 +89,18 @@ spec:
             limits:
               memory: 2Gi
       volumes:
+        {{- if .Values.publication.enabled }}
+        - name: integrations
+          configMap:
+            name: mendicant-agent-integrations
+        - name: argocd-publication
+          secret:
+            secretName: {{ .Values.publication.secretName }}
+            defaultMode: 0440
+            items:
+              - key: token
+                path: token
+        {{- end }}
         - name: database-cache
           {{- if eq .Values.cache.mode "pvc" }}
           persistentVolumeClaim:

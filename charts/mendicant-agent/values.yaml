@@ -11,6 +11,8 @@ token:
 
 # Enable only after the user-managed ArgoCD credential item is available.
 discovery:
+  integrationKey: ""
+  destinations: {}
   enabled: false
   secretName: mendicant-argocd-discovery
   onePasswordItemPath: ""
@@ -22,3 +24,10 @@ cache:
   maxBytes: "4294967296"
   existingClaim: ""
   storageClass: ""
+
+# Provision a separate ArgoCD Application-update credential before enabling.
+publication:
+  enabled: false
+  secretName: mendicant-argocd-publication
+  onePasswordItemPath: ""
+  publicURL: ""

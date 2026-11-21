@@ -1,0 +1,19 @@
+{{- if .Values.publication.enabled }}
+{{- if not .Values.discovery.enabled }}{{ fail "publication requires discovery.enabled" }}{{- end }}
+{{- $key := required "discovery.integrationKey is required for publication" .Values.discovery.integrationKey }}
+{{- $url := required "publication.publicURL is required" .Values.publication.publicURL }}
+{{- $configuration := dict $key (dict "server_url_file" "/run/argocd/server-url" "token_file" "/run/argocd/token" "destinations" .Values.discovery.destinations "publication" (dict "token_file" "/run/argocd-publication/token" "public_url" $url)) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mendicant-agent-integrations
+data:
+  integrations.json: {{ $configuration | toJson | quote }}
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: {{ required "publication.secretName is required" .Values.publication.secretName }}
+spec:
+  itemPath: {{ required "publication.onePasswordItemPath is required" .Values.publication.onePasswordItemPath | quote }}
+{{- end }}

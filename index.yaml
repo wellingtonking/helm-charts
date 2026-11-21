@@ -31,6 +31,16 @@ entries:
   mendicant-agent:
   - apiVersion: v2
     appVersion: 2.0.0
+    created: "2026-11-21T13:52:29.752726-05:00"
+    description: Serial Mendicant scanner worker using the outbound work protocol
+    digest: 0513b0735867426b55d7dbf807cf6ed4bc399492076187e8618ff9fd7617d07b
+    name: mendicant-agent
+    type: application
+    urls:
+    - https://wellingtonking.github.io/helm-charts/mendicant-agent-0.6.0.tgz
+    version: 0.6.0
+  - apiVersion: v2
+    appVersion: 2.0.0
     created: "2026-11-19T11:47:18.197271-05:00"
     description: Serial Mendicant scanner worker using the outbound work protocol
     digest: b1d7bfaa42c9ed4ea2f029dde5e3c728bd48056220282ff2b1c3354685076601
@@ -150,7 +160,7 @@ entries:
       artifacthub.io/category: streaming-messaging
     apiVersion: v2
     appVersion: 2.20.1
-    created: "2026-11-19T11:47:18.203461-05:00"
+    created: "2026-11-21T13:52:29.761604-05:00"
     description: 'A Helm chart for the RabbitMQ Cluster Operator, which manages RabbitMQ
       clusters deployed to Kubernetes as a custom resource. '
     digest: 406143c248209c1022e5bb88be9b8fa164a830aad27606e1db6f01f1809ccbde
@@ -174,7 +184,7 @@ entries:
       artifacthub.io/category: streaming-messaging
     apiVersion: v2
     appVersion: 1.19.1
-    created: "2026-11-19T11:47:18.204986-05:00"
+    created: "2026-11-21T13:52:29.762996-05:00"
     description: 'A Helm chart for the RabbitMQ Messaging Topology Operator, which
       manages RabbitMQ messaging topology objects (queues, exchanges, bindings, users,
       vhosts, etc.) as Kubernetes custom resources. '
@@ -195,4 +205,4 @@ entries:
     urls:
     - https://wellingtonking.github.io/helm-charts/rabbitmq-messaging-topology-operator-0.0.1.tgz
     version: 0.0.1
-generated: "2026-11-19T11:47:18.19292-05:00"
+generated: "2026-11-21T13:52:29.74565-05:00"

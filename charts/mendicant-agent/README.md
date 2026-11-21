@@ -51,3 +51,16 @@ The Pod retains UID/GID/fsGroup 10001, a read-only root filesystem, and Recreate
 `fsGroupChangePolicy: OnRootMismatch` applies only to supporting persistent-volume drivers, not emptyDir.
 A real cluster smoke test must verify writable access and cache survival/loss for the selected mode before rollout.
 Docker-volume acceptance in the source repository does not establish CSI ownership behaviour.
+
+## Optional Live Application Notices
+
+Chart 0.6.0 adds `publication.enabled`, disabled by default. Use a compatible agent image and server notice-feed endpoint.
+Keep discovery and publication credentials separate. ArgoCD PATCH requires Application get/update permissions; discovery remains read-only.
+ArgoCD RBAC cannot restrict annotation keys. The publisher code constrains its patches to the five adopted notice keys.
+Obtain explicit operator approval for that permission boundary before provisioning the publication account.
+Set `discovery.integrationKey` and explicit `discovery.destinations` aliases for the installation.
+Set `publication.onePasswordItemPath`, `publication.secretName`, and the non-secret `publication.publicURL` before enabling.
+The item contains only `token`; the chart projects that key read-only at `/run/argocd-publication/token`.
+The chart generates integration configuration and rolls the worker when discovery/publication settings change.
+It does not create ArgoCD accounts or configure GitOps ownership ignores. Provision both before enabling publication.
+The source repository's `docs/operations/COVERAGE_AND_NOTICES.md` owns guard semantics and combined rollout acceptance.

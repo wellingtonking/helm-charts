@@ -31,6 +31,16 @@ entries:
   mendicant-agent:
   - apiVersion: v2
     appVersion: 2.0.0
+    created: "2026-11-25T21:26:42.18599-05:00"
+    description: Serial Mendicant scanner worker using the outbound work protocol
+    digest: 965d608f4d8cbb62d8b76c33995ef88deaf3d539631d3e617ab5a3d8bd3a3cca
+    name: mendicant-agent
+    type: application
+    urls:
+    - mendicant-agent-0.7.0.tgz
+    version: 0.7.0
+  - apiVersion: v2
+    appVersion: 2.0.0
     created: "2026-11-21T13:52:29.752726-05:00"
     description: Serial Mendicant scanner worker using the outbound work protocol
     digest: 0513b0735867426b55d7dbf807cf6ed4bc399492076187e8618ff9fd7617d07b
@@ -205,4 +215,4 @@ entries:
     urls:
     - https://wellingtonking.github.io/helm-charts/rabbitmq-messaging-topology-operator-0.0.1.tgz
     version: 0.0.1
-generated: "2026-11-21T13:52:29.74565-05:00"
+generated: "2026-11-25T21:26:42.185115-05:00"

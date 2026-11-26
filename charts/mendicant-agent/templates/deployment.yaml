@@ -17,9 +17,14 @@ spec:
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
-      {{- if .Values.publication.enabled }}
+      {{- if or .Values.publication.enabled .Values.registryAccess.rules }}
       annotations:
+        {{- if .Values.registryAccess.rules }}
+        checksum/registry-access: {{ .Values.registryAccess | toJson | sha256sum | quote }}
+        {{- end }}
+        {{- if .Values.publication.enabled }}
         checksum/integrations: {{ dict "discovery" .Values.discovery "publication" .Values.publication | toJson | sha256sum | quote }}
+        {{- end }}
       {{- end }}
       labels:
         app.kubernetes.io/name: mendicant-agent
@@ -44,6 +49,10 @@ spec:
         - name: agent
           image: {{ printf "%s@%s" .Values.image.repository (required "image.digest is required" .Values.image.digest) | quote }}
           env:
+            {{- if .Values.registryAccess.rules }}
+            - name: MENDICANT_REGISTRIES_FILE
+              value: /run/registry-config/registries.json
+            {{- end }}
             {{- if .Values.publication.enabled }}
             - name: MENDICANT_INTEGRATIONS_FILE
               value: /run/integrations/integrations.json
@@ -62,6 +71,16 @@ spec:
             capabilities:
               drop: [ALL]
           volumeMounts:
+            {{- if .Values.registryAccess.rules }}
+            - name: registry-config
+              mountPath: /run/registry-config
+              readOnly: true
+            {{- range $name, $_ := .Values.registryAccess.credentials }}
+            - name: registry-{{ $name }}
+              mountPath: /run/registry-credentials/{{ $name }}
+              readOnly: true
+            {{- end }}
+            {{- end }}
             {{- if .Values.publication.enabled }}
             - name: integrations
               mountPath: /run/integrations
@@ -89,6 +108,22 @@ spec:
             limits:
               memory: 2Gi
       volumes:
+        {{- if .Values.registryAccess.rules }}
+        - name: registry-config
+          configMap:
+            name: mendicant-agent-registry-access
+        {{- range $name, $_ := .Values.registryAccess.credentials }}
+        - name: registry-{{ $name }}
+          secret:
+            secretName: mendicant-registry-{{ $name }}
+            defaultMode: 0440
+            items:
+              - key: username
+                path: username
+              - key: token
+                path: token
+        {{- end }}
+        {{- end }}
         {{- if .Values.publication.enabled }}
         - name: integrations
           configMap:

@@ -31,3 +31,8 @@ publication:
   secretName: mendicant-argocd-publication
   onePasswordItemPath: ""
   publicURL: ""
+
+# Dedicated scanner credentials. A rule without a repository is the host default.
+registryAccess:
+  credentials: {}
+  rules: []

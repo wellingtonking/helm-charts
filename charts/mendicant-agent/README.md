@@ -64,3 +64,12 @@ The item contains only `token`; the chart projects that key read-only at `/run/a
 The chart generates integration configuration and rolls the worker when discovery/publication settings change.
 It does not create ArgoCD accounts or configure GitOps ownership ignores. Provision both before enabling publication.
 The source repository's `docs/operations/COVERAGE_AND_NOTICES.md` owns guard semantics and combined rollout acceptance.
+
+## Private registry access
+
+Set `registryAccess.credentials.<name>.onePasswordItemPath` to an item with
+`username` and `token` fields. Each rule selects a credential for a registry
+host. Add a `repository` path to make the rule an exact override. Set
+`tokenURL` to the trusted HTTPS token endpoint for Bearer authentication.
+Keep the values in the environment repository. The chart projects the two
+credential fields into the agent as read-only files.

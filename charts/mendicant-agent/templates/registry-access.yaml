@@ -1,0 +1,31 @@
+{{- if .Values.registryAccess.rules }}
+{{- $entries := list }}
+{{- $used := dict }}
+{{- range .Values.registryAccess.rules }}
+{{- if not (hasKey $.Values.registryAccess.credentials .credential) }}
+{{- fail (printf "registry credential %q is not configured" .credential) }}
+{{- end }}
+{{- $_ := set $used .credential true }}
+{{- $entries = append $entries (dict "registry" .registry "repository" (default "" .repository) "token_url" (default "" .tokenURL) "directory" (printf "/run/registry-credentials/%s" .credential)) }}
+{{- end }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mendicant-agent-registry-access
+data:
+  registries.json: {{ $entries | toJson | quote }}
+{{- range $name, $credential := .Values.registryAccess.credentials }}
+{{- if not (hasKey $used $name) }}
+{{- fail (printf "registry credential %q has no rule" $name) }}
+{{- end }}
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: mendicant-registry-{{ $name }}
+spec:
+  itemPath: {{ $credential.onePasswordItemPath | quote }}
+{{- end }}
+{{- else if .Values.registryAccess.credentials }}
+{{- fail "registryAccess.credentials requires at least one rule" }}
+{{- end }}
